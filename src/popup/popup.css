@@ -61,7 +61,7 @@ button {
 }
 button:disabled { opacity: 0.4; cursor: not-allowed; }
 
-.status { color: var(--text-muted); margin: 8px 0; }
+.status { color: var(--text-muted); margin: 8px 0; text-wrap: balance; }
 .status.error { color: var(--loss); }
 
 .game-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }

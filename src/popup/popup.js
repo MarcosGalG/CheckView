@@ -59,11 +59,8 @@ async function loadGames(username) {
     hideStatus();
     renderGames(games);
   } catch (error) {
-    if (error instanceof ChessComApiError) {
-      showStatus(`errors.${error.code}`, { params: { status: error.status }, isError: true });
-    } else {
-      showStatus("errors.network", { isError: true });
-    }
+    const notFound = error instanceof ChessComApiError && error.code === "userNotFound";
+    showStatus(notFound ? "errors.userNotFound" : "errors.loadFailed", { isError: true });
   }
 }
 
@@ -83,6 +80,7 @@ languageSelect.addEventListener("change", async () => {
 form.addEventListener("submit", async (event) => {
   event.preventDefault();
   const username = usernameInput.value.trim();
+  if (!username) return;
   await chrome.storage.local.set({ username });
   loadGames(username);
 });

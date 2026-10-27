@@ -7,12 +7,10 @@ const MESSAGES = {
     usernamePlaceholder: "Your chess.com username",
     load: "Load",
     analyze: "Analyze",
-    comingSoon: "Coming soon",
     loading: "Loading games…",
     noGames: "No games found for this user.",
-    "errors.userNotFound": "User not found on chess.com.",
-    "errors.requestFailed": "chess.com API error ({status}).",
-    "errors.network": "Could not connect to chess.com.",
+    "errors.userNotFound": "User not found.",
+    "errors.loadFailed": "Couldn't load games. Try again.",
     "color.white": "White",
     "color.black": "Black",
     "outcome.win": "W",
@@ -28,12 +26,10 @@ const MESSAGES = {
     usernamePlaceholder: "Tu usuario de chess.com",
     load: "Cargar",
     analyze: "Analizar",
-    comingSoon: "Próximamente",
     loading: "Cargando partidas…",
     noGames: "No hay partidas para este usuario.",
-    "errors.userNotFound": "Usuario no encontrado en chess.com.",
-    "errors.requestFailed": "Error de la API de chess.com ({status}).",
-    "errors.network": "No se pudo conectar con chess.com.",
+    "errors.userNotFound": "Usuario no encontrado.",
+    "errors.loadFailed": "No se pudieron cargar las partidas. Inténtalo de nuevo.",
     "color.white": "Blancas",
     "color.black": "Negras",
     "outcome.win": "V",
@@ -72,18 +68,12 @@ export function t(key, params = {}) {
   return template.replace(/\{(\w+)\}/g, (_, name) => params[name] ?? `{${name}}`);
 }
 
-/**
- * Translates every element under `root` marked with:
- * data-i18n (text), data-i18n-placeholder or data-i18n-title.
- */
+/** Translates every element under `root` marked with data-i18n (text) or data-i18n-placeholder. */
 export function applyTranslations(root = document) {
   for (const el of root.querySelectorAll("[data-i18n]")) {
     el.textContent = t(el.dataset.i18n);
   }
   for (const el of root.querySelectorAll("[data-i18n-placeholder]")) {
     el.placeholder = t(el.dataset.i18nPlaceholder);
-  }
-  for (const el of root.querySelectorAll("[data-i18n-title]")) {
-    el.title = t(el.dataset.i18nTitle);
   }
 }
