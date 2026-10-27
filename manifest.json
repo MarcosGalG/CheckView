@@ -1,0 +1,12 @@
+{
+  "manifest_version": 3,
+  "name": "CheckView",
+  "version": "0.1.0",
+  "description": "Analyze your finished chess.com games with Stockfish, free and fully local.",
+  "action": {
+    "default_popup": "src/popup/popup.html",
+    "default_title": "CheckView"
+  },
+  "permissions": ["storage"],
+  "host_permissions": ["https://api.chess.com/*"]
+}

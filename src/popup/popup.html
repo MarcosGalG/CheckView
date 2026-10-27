@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>CheckView</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <header class="header">
+    <h1>CheckView</h1>
+    <span class="subtitle">Game analysis</span>
+  </header>
+
+  <form id="user-form" class="user-form">
+    <input id="username" type="text" placeholder="Your chess.com username" autocomplete="off" required>
+    <button type="submit">Load</button>
+  </form>
+
+  <p id="status" class="status" hidden></p>
+
+  <ul id="game-list" class="game-list"></ul>
+
+  <template id="game-row">
+    <li class="game">
+      <span class="game-result"></span>
+      <div class="game-info">
+        <span class="game-opponent"></span>
+        <span class="game-meta"></span>
+      </div>
+      <button class="game-analyze" disabled title="Coming soon">Analyze</button>
+    </li>
+  </template>
+
+  <script type="module" src="popup.js"></script>
+</body>
+</html>
