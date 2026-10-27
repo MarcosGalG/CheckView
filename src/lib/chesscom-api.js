@@ -6,13 +6,23 @@ const DRAW_RESULTS = new Set([
   "agreed", "repetition", "stalemate", "insufficient", "50move", "timevsinsufficient",
 ]);
 
+/** Error with a stable `code` ("userNotFound" | "requestFailed") so the UI can translate it. */
+export class ChessComApiError extends Error {
+  constructor(code, status) {
+    super(`chess.com API: ${code} (${status})`);
+    this.name = "ChessComApiError";
+    this.code = code;
+    this.status = status;
+  }
+}
+
 async function getJson(url) {
   const response = await fetch(url);
   if (response.status === 404) {
-    throw new Error("User not found on chess.com");
+    throw new ChessComApiError("userNotFound", response.status);
   }
   if (!response.ok) {
-    throw new Error(`chess.com API error (${response.status})`);
+    throw new ChessComApiError("requestFailed", response.status);
   }
   return response.json();
 }

@@ -38,6 +38,15 @@ Each game is normalized into a `GameSummary` from the user's perspective:
 | `outcome` | `win`, `loss` or `draw` |
 | `me`, `opponent` | Username and rating of each player |
 
+## Internationalization
+
+Chrome's `chrome.i18n` API follows the browser locale and cannot be switched at runtime, so translations live in `src/lib/i18n.js`:
+
+- Static text is marked in the HTML with `data-i18n`, `data-i18n-placeholder` or `data-i18n-title` and filled by `applyTranslations()`.
+- Dynamic text uses `t(key, params)`, with `{name}` placeholders.
+- Language resolution: saved preference → browser language → English.
+- The API client throws `ChessComApiError` with a stable `code` instead of a user-facing message, keeping the data layer independent of the UI language.
+
 ## Security
 
 API data is written to the DOM with `textContent`, never `innerHTML`, to prevent HTML injection.

@@ -21,9 +21,24 @@ body {
   font: 14px/1.4 system-ui, "Segoe UI", sans-serif;
 }
 
-.header { margin-bottom: 12px; }
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
 .header h1 { margin: 0; font-size: 20px; }
 .subtitle { color: var(--text-muted); font-size: 12px; }
+
+.language {
+  padding: 4px 6px;
+  border: 1px solid var(--surface-hover);
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--text);
+  font-size: 12px;
+  cursor: pointer;
+}
 
 .user-form { display: flex; gap: 8px; margin-bottom: 12px; }
 .user-form input {

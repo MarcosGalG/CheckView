@@ -10,7 +10,7 @@ Everything is **free and local**: games are fetched from the chess.com public AP
 
 | Phase | Scope | Status |
 |---|---|---|
-| 1 | Extension skeleton, configurable username, recent games list | ✅ |
+| 1 | Extension skeleton, configurable username, recent games list, English/Spanish UI | ✅ |
 | 2 | Stockfish (WebAssembly) engine integration and per-move evaluation | ⏳ |
 | 3 | Move classification, accuracy and game summary | ⏳ |
 | 4 | Move-by-move review with board and evaluation graph | ⏳ |
@@ -27,6 +27,8 @@ Everything is **free and local**: games are fetched from the chess.com public AP
 4. Click **Load unpacked** and select the project folder.
 5. Pin the extension, open it and enter your chess.com username.
 
+The interface is available in English and Spanish. It follows the browser language by default and can be changed from the selector in the popup.
+
 ## Project structure
 
 ```
@@ -34,7 +36,8 @@ CheckView/
 ├── manifest.json            # Extension configuration (Manifest V3)
 ├── src/
 │   ├── lib/
-│   │   └── chesscom-api.js  # chess.com public API client
+│   │   ├── chesscom-api.js  # chess.com public API client
+│   │   └── i18n.js          # English/Spanish translations
 │   └── popup/               # Toolbar popup
 │       ├── popup.html
 │       ├── popup.css

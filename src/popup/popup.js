@@ -1,57 +1,84 @@
-import { getRecentGames } from "../lib/chesscom-api.js";
+import { ChessComApiError, getRecentGames } from "../lib/chesscom-api.js";
+import { applyTranslations, getLanguage, resolveLanguage, setLanguage, t } from "../lib/i18n.js";
 
 const form = document.getElementById("user-form");
 const usernameInput = document.getElementById("username");
+const languageSelect = document.getElementById("language");
 const statusText = document.getElementById("status");
 const gameList = document.getElementById("game-list");
 const rowTemplate = document.getElementById("game-row");
 
-const RESULT_LETTER = { win: "W", loss: "L", draw: "D" };
-const TIME_CLASS_LABEL = { bullet: "Bullet", blitz: "Blitz", rapid: "Rapid", daily: "Daily" };
+// Kept so the current view can be re-rendered when the language changes.
+let currentGames = [];
+let currentStatus = null;
 
-function showStatus(message, isError = false) {
-  statusText.textContent = message;
+function showStatus(key, { params, isError = false } = {}) {
+  currentStatus = { key, params, isError };
+  statusText.textContent = t(key, params);
   statusText.classList.toggle("error", isError);
   statusText.hidden = false;
 }
 
+function hideStatus() {
+  currentStatus = null;
+  statusText.hidden = true;
+}
+
 function renderGames(games) {
+  currentGames = games;
   gameList.replaceChildren();
 
   for (const game of games) {
     const row = rowTemplate.content.cloneNode(true);
+    applyTranslations(row);
 
     const result = row.querySelector(".game-result");
-    result.textContent = RESULT_LETTER[game.outcome];
+    result.textContent = t(`outcome.${game.outcome}`);
     result.classList.add(game.outcome);
 
     row.querySelector(".game-opponent").textContent =
       `vs ${game.opponent.username} (${game.opponent.rating})`;
 
-    const colorLabel = game.color === "white" ? "White" : "Black";
-    const date = game.endTime.toLocaleDateString();
+    const date = game.endTime.toLocaleDateString(getLanguage());
     row.querySelector(".game-meta").textContent =
-      `${TIME_CLASS_LABEL[game.timeClass] ?? game.timeClass} · ${colorLabel} · ${date}`;
+      `${t(`timeClass.${game.timeClass}`)} · ${t(`color.${game.color}`)} · ${date}`;
 
     gameList.append(row);
   }
 }
 
 async function loadGames(username) {
-  showStatus("Loading games…");
-  gameList.replaceChildren();
+  renderGames([]);
+  showStatus("loading");
   try {
     const games = await getRecentGames(username);
     if (games.length === 0) {
-      showStatus("No games found for this user.");
+      showStatus("noGames");
       return;
     }
-    statusText.hidden = true;
+    hideStatus();
     renderGames(games);
   } catch (error) {
-    showStatus(error.message, true);
+    if (error instanceof ChessComApiError) {
+      showStatus(`errors.${error.code}`, { params: { status: error.status }, isError: true });
+    } else {
+      showStatus("errors.network", { isError: true });
+    }
   }
 }
+
+function changeLanguage(language) {
+  setLanguage(language);
+  languageSelect.value = getLanguage();
+  applyTranslations();
+  renderGames(currentGames);
+  if (currentStatus) showStatus(currentStatus.key, currentStatus);
+}
+
+languageSelect.addEventListener("change", async () => {
+  changeLanguage(languageSelect.value);
+  await chrome.storage.local.set({ language: getLanguage() });
+});
 
 form.addEventListener("submit", async (event) => {
   event.preventDefault();
@@ -60,8 +87,9 @@ form.addEventListener("submit", async (event) => {
   loadGames(username);
 });
 
-const { username } = await chrome.storage.local.get("username");
-if (username) {
-  usernameInput.value = username;
-  loadGames(username);
+const settings = await chrome.storage.local.get(["username", "language"]);
+changeLanguage(resolveLanguage(settings.language));
+if (settings.username) {
+  usernameInput.value = settings.username;
+  loadGames(settings.username);
 }
