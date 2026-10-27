@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CheckView</title>
+  <link rel="stylesheet" href="review.css">
+</head>
+<body>
+  <main class="page">
+    <header class="header">
+      <h1 data-i18n="review.title"></h1>
+      <p id="players" class="players"></p>
+    </header>
+
+    <section id="progress" class="progress" hidden>
+      <div class="progress-track"><div id="progress-bar" class="progress-bar"></div></div>
+      <span id="progress-text" class="progress-text"></span>
+    </section>
+
+    <p id="status" class="status" hidden></p>
+
+    <table id="moves" class="moves" hidden>
+      <tbody id="moves-body"></tbody>
+    </table>
+  </main>
+
+  <template id="move-cell">
+    <div class="move">
+      <div class="move-main">
+        <span class="move-san"></span>
+        <span class="move-eval"></span>
+      </div>
+      <span class="move-best"></span>
+    </div>
+  </template>
+
+  <script type="module" src="review.js"></script>
+</body>
+</html>

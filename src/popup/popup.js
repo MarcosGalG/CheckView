@@ -43,8 +43,16 @@ function renderGames(games) {
     row.querySelector(".game-meta").textContent =
       `${t(`timeClass.${game.timeClass}`)} · ${t(`color.${game.color}`)} · ${date}`;
 
+    row.querySelector(".game-analyze").addEventListener("click", () => openReview(game));
+
     gameList.append(row);
   }
+}
+
+async function openReview(game) {
+  const { pgn, color, outcome, url, me, opponent } = game;
+  await chrome.storage.session.set({ currentGame: { pgn, color, outcome, url, me, opponent } });
+  await chrome.tabs.create({ url: chrome.runtime.getURL("src/review/review.html") });
 }
 
 async function loadGames(username) {

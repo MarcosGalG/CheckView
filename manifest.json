@@ -8,5 +8,8 @@
     "default_title": "CheckView"
   },
   "permissions": ["storage"],
-  "host_permissions": ["https://api.chess.com/*"]
+  "host_permissions": ["https://api.chess.com/*"],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'"
+  }
 }

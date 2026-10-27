@@ -1,0 +1,71 @@
+:root {
+  --bg: #1f2125;
+  --surface: #2a2d33;
+  --surface-alt: #262930;
+  --text: #e8e9eb;
+  --text-muted: #9a9ea6;
+  --accent: #5b9bd5;
+  --error: #e05d5d;
+}
+
+* { box-sizing: border-box; }
+
+[hidden] { display: none !important; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font: 14px/1.4 system-ui, "Segoe UI", sans-serif;
+}
+
+.page {
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 24px 16px;
+}
+
+.header { margin-bottom: 16px; }
+.header h1 { margin: 0 0 4px; font-size: 22px; }
+.players { margin: 0; color: var(--text-muted); }
+
+.progress { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+.progress-track {
+  flex: 1;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--surface);
+  overflow: hidden;
+}
+.progress-bar {
+  width: 0;
+  height: 100%;
+  background: var(--accent);
+  transition: width 0.2s ease;
+}
+.progress-text {
+  min-width: 120px;
+  text-align: right;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.status { color: var(--text-muted); }
+.status.error { color: var(--error); }
+
+.moves {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  font-variant-numeric: tabular-nums;
+}
+.moves tr:nth-child(odd) { background: var(--surface); }
+.moves tr:nth-child(even) { background: var(--surface-alt); }
+.moves td { padding: 6px 10px; vertical-align: top; }
+.moves .move-number { width: 48px; color: var(--text-muted); }
+
+.move-main { display: flex; justify-content: space-between; gap: 8px; }
+.move-san { font-weight: 600; }
+.move-eval { color: var(--text-muted); }
+.move-best { display: block; color: var(--text-muted); font-size: 12px; }
+.move-best:empty { display: none; }

@@ -11,7 +11,7 @@ Everything is **free and local**: games are fetched from the chess.com public AP
 | Phase | Scope | Status |
 |---|---|---|
 | 1 | Extension skeleton, configurable username, recent games list, English/Spanish UI | ✅ |
-| 2 | Stockfish (WebAssembly) engine integration and per-move evaluation | ⏳ |
+| 2 | Stockfish (WebAssembly) engine integration and per-move evaluation | ✅ |
 | 3 | Move classification, accuracy and game summary | ⏳ |
 | 4 | Move-by-move review with board and evaluation graph | ⏳ |
 | 5 | Mistake explanations (hanging pieces, mates, tactics, positional errors) | ⏳ |
@@ -36,12 +36,13 @@ CheckView/
 ├── manifest.json            # Extension configuration (Manifest V3)
 ├── src/
 │   ├── lib/
+│   │   ├── analysis.js      # Per-move game evaluation
 │   │   ├── chesscom-api.js  # chess.com public API client
+│   │   ├── engine.js        # Stockfish Web Worker wrapper (UCI)
 │   │   └── i18n.js          # English/Spanish translations
-│   └── popup/               # Toolbar popup
-│       ├── popup.html
-│       ├── popup.css
-│       └── popup.js
+│   ├── popup/               # Toolbar popup: recent games
+│   └── review/              # Game review page
+├── vendor/                  # Third-party code (Stockfish, chess.js)
 └── docs/
     └── ARCHITECTURE.md      # Technical design
 ```
@@ -53,7 +54,8 @@ See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for details.
 - Vanilla JavaScript (ES modules), HTML and CSS. No frameworks, no build step.
 - Chrome Extensions, Manifest V3.
 - [chess.com Published-Data API](https://www.chess.com/news/view/published-data-api).
-- Stockfish compiled to WebAssembly (from phase 2).
+- [Stockfish.js](https://github.com/nmrugg/stockfish.js) 19 (lite, single-threaded WebAssembly build).
+- [chess.js](https://github.com/jhlywa/chess.js) for PGN parsing and move generation.
 
 ## License
 

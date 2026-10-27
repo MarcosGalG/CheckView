@@ -38,6 +38,39 @@ Each game is normalized into a `GameSummary` from the user's perspective:
 | `outcome` | `win`, `loss` or `draw` |
 | `me`, `opponent` | Username and rating of each player |
 
+## Game analysis
+
+Clicking **Analyze** stores the selected game in `chrome.storage.session` and opens `src/review/review.html` in a new tab. The analysis runs there rather than in the popup, because the popup is destroyed as soon as it loses focus.
+
+```
+review.js ──analyzeGame(pgn)──▶ analysis.js ──evaluate(fen)──▶ engine.js ──UCI──▶ Stockfish (Web Worker + WASM)
+```
+
+### Engine (`src/lib/engine.js`)
+
+Stockfish runs in a Web Worker so the search never blocks the UI. Communication uses the UCI text protocol:
+
+1. `uci` → `uciok`, `isready` → `readyok` on startup.
+2. For each position: `position fen <fen>` and `go depth <n>`.
+3. The engine streams `info … score cp|mate … pv …` lines and ends with `bestmove <move>`.
+
+`evaluate()` keeps the last exact `info` score (bounds are ignored) and returns it **from White's point of view**, since UCI scores are relative to the side to move. Mates are mapped to a large centipawn sentinel so every evaluation is comparable numerically. Requests are queued because the engine handles one search at a time.
+
+The lite single-threaded build (~1.8 MB) is used: it needs no cross-origin isolation and is far stronger than any human. Running WebAssembly in extension pages requires `'wasm-unsafe-eval'` in the manifest's content security policy.
+
+### Per-move evaluation (`src/lib/analysis.js`)
+
+chess.js parses the PGN and yields every position. Each position is evaluated once at depth 14; move *i* then gets:
+
+| Field | Description |
+|---|---|
+| `evalBefore` | Evaluation of the position before the move (best play) |
+| `evalAfter` | Evaluation after the move actually played |
+| `bestMove`, `bestMoveSan` | Engine's preferred move (UCI and SAN) |
+| `isBest` | Whether the played move matches the engine's choice |
+
+The difference between `evalBefore` and `evalAfter` is the basis for move classification in phase 3. A typical 40-move game takes around 15–30 seconds.
+
 ## Internationalization
 
 Chrome's `chrome.i18n` API follows the browser locale and cannot be switched at runtime, so translations live in `src/lib/i18n.js`:

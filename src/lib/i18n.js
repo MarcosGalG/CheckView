@@ -20,6 +20,11 @@ const MESSAGES = {
     "timeClass.blitz": "Blitz",
     "timeClass.rapid": "Rapid",
     "timeClass.daily": "Daily",
+    "review.title": "Game review",
+    "review.analyzing": "Analyzing… {done}/{total}",
+    "review.failed": "Couldn't analyze the game.",
+    "review.noGame": "No game selected.",
+    "review.best": "Best: {move}",
   },
   es: {
     subtitle: "Análisis de partidas",
@@ -39,6 +44,11 @@ const MESSAGES = {
     "timeClass.blitz": "Blitz",
     "timeClass.rapid": "Rápida",
     "timeClass.daily": "Diaria",
+    "review.title": "Análisis de la partida",
+    "review.analyzing": "Analizando… {done}/{total}",
+    "review.failed": "No se pudo analizar la partida.",
+    "review.noGame": "No hay ninguna partida seleccionada.",
+    "review.best": "Mejor: {move}",
   },
 };
 
