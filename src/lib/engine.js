@@ -145,6 +145,11 @@ export class Engine {
     return result;
   }
 
+  /** Ends the current search early; its evaluate() call resolves with the result so far. */
+  stop() {
+    this.send("stop");
+  }
+
   terminate() {
     this.worker.terminate();
     this.listeners.clear();

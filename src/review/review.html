@@ -4,59 +4,114 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>CheckView</title>
+  <link rel="stylesheet" href="../../vendor/chessground/chessground.base.css">
+  <link rel="stylesheet" href="../../vendor/chessground/chessground.cburnett.css">
+  <link rel="stylesheet" href="board.css">
   <link rel="stylesheet" href="review.css">
 </head>
 <body>
-  <main class="page">
-    <header class="header">
-      <div class="brand">
-        <img src="../assets/logo-small.svg" alt="">
-        <div>
-          <h1 data-i18n="review.title"></h1>
-          <p id="players" class="players"></p>
+  <main class="layout">
+    <section class="board-area">
+      <div class="player" id="player-top"></div>
+      <div class="board-row">
+        <div class="eval-bar" id="eval-bar">
+          <div class="eval-fill" id="eval-fill"></div>
+          <span class="eval-label" id="eval-label"></span>
         </div>
+        <div class="board-wrap"><div id="board"></div></div>
       </div>
-    </header>
-
-    <section id="progress" class="progress" hidden>
-      <div class="progress-track"><div id="progress-bar" class="progress-bar"></div></div>
-      <span id="progress-text" class="progress-text"></span>
+      <div class="player" id="player-bottom"></div>
     </section>
 
-    <p id="status" class="status" hidden></p>
+    <aside class="panel">
+      <header class="header">
+        <div class="brand">
+          <img src="../assets/logo-small.svg" alt="">
+          <div>
+            <h1 data-i18n="review.title"></h1>
+            <p id="players" class="players"></p>
+          </div>
+        </div>
+      </header>
 
-    <table id="summary" class="summary" hidden>
-      <thead>
-        <tr>
-          <th></th>
-          <th id="white-name" class="player"></th>
-          <th id="black-name" class="player"></th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr class="accuracy-row">
-          <th data-i18n="review.accuracy"></th>
-          <td id="white-accuracy"></td>
-          <td id="black-accuracy"></td>
-        </tr>
-      </tbody>
-      <tbody id="summary-counts"></tbody>
-    </table>
+      <section id="progress" class="progress" hidden>
+        <div class="progress-track"><div id="progress-bar" class="progress-bar"></div></div>
+        <span id="progress-text" class="progress-text"></span>
+      </section>
 
-    <table id="moves" class="moves" hidden>
-      <tbody id="moves-body"></tbody>
-    </table>
+      <p id="status" class="status" hidden></p>
+
+      <div class="panel-scroll" id="panel-scroll">
+        <table id="summary" class="summary" hidden>
+          <colgroup>
+            <col class="col-label">
+            <col>
+            <col class="col-icon">
+            <col>
+          </colgroup>
+          <thead>
+            <tr>
+              <th></th>
+              <th id="white-name" class="player-name"></th>
+              <th></th>
+              <th id="black-name" class="player-name"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="accuracy-row">
+              <th data-i18n="review.accuracy"></th>
+              <td id="white-accuracy"></td>
+              <td></td>
+              <td id="black-accuracy"></td>
+            </tr>
+          </tbody>
+          <tbody id="summary-counts"></tbody>
+        </table>
+
+        <div class="moves-list">
+          <table id="moves" class="moves">
+            <tbody id="moves-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <section id="current" class="current" hidden>
+        <div class="current-main">
+          <span id="current-icon"></span>
+          <span id="current-text" class="current-text"></span>
+          <span id="current-eval" class="current-eval"></span>
+        </div>
+        <p id="current-best" class="current-best"></p>
+        <button id="back-to-game" class="link-button" data-i18n="review.backToGame" hidden></button>
+      </section>
+
+      <div id="graph-wrap" class="graph-wrap" hidden>
+        <svg id="graph" class="graph" preserveAspectRatio="none"></svg>
+        <span id="graph-tooltip" class="graph-tooltip" hidden></span>
+      </div>
+
+      <nav class="nav">
+        <button id="nav-first" class="nav-button" aria-label="First">
+          <svg viewBox="0 0 24 24"><path d="M18 6 L10 12 L18 18 Z M6 6 H8 V18 H6 Z" /></svg>
+        </button>
+        <button id="nav-prev" class="nav-button" aria-label="Previous">
+          <svg viewBox="0 0 24 24"><path d="M16 5 L8 12 L16 19 Z" /></svg>
+        </button>
+        <button id="nav-next" class="nav-button" aria-label="Next">
+          <svg viewBox="0 0 24 24"><path d="M8 5 L16 12 L8 19 Z" /></svg>
+        </button>
+        <button id="nav-last" class="nav-button" aria-label="Last">
+          <svg viewBox="0 0 24 24"><path d="M6 6 L14 12 L6 18 Z M16 6 H18 V18 H16 Z" /></svg>
+        </button>
+      </nav>
+    </aside>
   </main>
 
   <template id="move-cell">
-    <div class="move">
-      <div class="move-main">
-        <span class="move-icon"></span>
-        <span class="move-san"></span>
-        <span class="move-eval"></span>
-      </div>
-      <span class="move-best"></span>
-    </div>
+    <button class="move">
+      <span class="move-icon"></span>
+      <span class="move-san"></span>
+    </button>
   </template>
 
   <script type="module" src="review.js"></script>

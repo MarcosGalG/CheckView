@@ -1,0 +1,30 @@
+/* Board theme on top of chessground.base.css and the cburnett piece set. */
+
+cg-board {
+  --square-light: #e9ecd2;
+  --square-dark: #6f9a58;
+  /* 2x2 tile repeated over the board: a8 (top left) light, a1 (bottom left) dark. */
+  background: repeating-conic-gradient(var(--square-dark) 0 25%, var(--square-light) 0 50%) 0 0 / 25% 25%;
+}
+
+cg-board square.last-move { background-color: rgba(250, 214, 70, 0.5); }
+/* Squares of a classified move take its color (--cls is set by the .cls-* classes in review.css). */
+cg-board square.last-move[class*="cls-"] { background-color: color-mix(in srgb, var(--cls) 55%, transparent); }
+cg-board square.selected { background-color: rgba(250, 214, 70, 0.6); }
+cg-board square.move-dest {
+  background: radial-gradient(rgba(0, 0, 0, 0.18) 19%, rgba(0, 0, 0, 0) 20%);
+}
+cg-board square.oc.move-dest {
+  background: radial-gradient(transparent 0%, transparent 79%, rgba(0, 0, 0, 0.18) 80%);
+}
+cg-board square.move-dest:hover { background: rgba(0, 0, 0, 0.12); }
+cg-board square.check {
+  background: radial-gradient(ellipse at center, rgba(235, 64, 52, 0.9) 0%, rgba(235, 64, 52, 0) 75%);
+}
+
+/* Coordinates take the color of the opposite square so they stay readable. */
+.cg-wrap coords { font-family: system-ui, sans-serif; font-size: 11px; font-weight: 600; opacity: 1; color: #6f9a58; }
+.orientation-white .ranks :nth-child(odd),
+.orientation-white .files :nth-child(odd),
+.orientation-black .ranks :nth-child(even),
+.orientation-black .files :nth-child(even) { color: #e9ecd2; }

@@ -13,7 +13,7 @@ Everything is **free and local**: games are fetched from the chess.com public AP
 | 1 | Extension skeleton, configurable username, recent games list, English/Spanish UI | ✅ |
 | 2 | Stockfish (WebAssembly) engine integration and per-move evaluation | ✅ |
 | 3 | Move classification, accuracy and game summary | ✅ |
-| 4 | Move-by-move review with board and evaluation graph | ⏳ |
+| 4 | Move-by-move review with board, evaluation bar and graph, and variation exploration | ✅ |
 | 5 | Mistake explanations (hanging pieces, mates, tactics, positional errors) | ⏳ |
 
 ## Installation (developer mode)
@@ -43,7 +43,7 @@ CheckView/
 │   │   ├── i18n.js            # English/Spanish translations
 │   │   └── openings.js        # Opening book lookups
 │   ├── popup/                 # Toolbar popup: recent games
-│   └── review/                # Game review page
+│   └── review/                # Game review page: board, evaluation bar and graph, move list
 ├── data/
 │   └── openings.json          # Opening book (generated)
 ├── scripts/
@@ -62,6 +62,7 @@ See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for details.
 - [chess.com Published-Data API](https://www.chess.com/news/view/published-data-api).
 - [Stockfish.js](https://github.com/nmrugg/stockfish.js) 19 (lite, single-threaded WebAssembly build).
 - [chess.js](https://github.com/jhlywa/chess.js) for PGN parsing and move generation.
+- [Chessground](https://github.com/lichess-org/chessground) for the interactive board, with the cburnett piece set.
 
 ## License
 
