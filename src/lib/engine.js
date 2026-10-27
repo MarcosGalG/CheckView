@@ -21,7 +21,9 @@ function parseInfo(line) {
   const score = line.match(/ score (cp|mate) (-?\d+)/);
   if (!score) return null;
   const pv = line.match(/ pv (.+)$/);
+  const multipv = line.match(/ multipv (\d+)/);
   return {
+    rank: multipv ? Number(multipv[1]) : 1,
     type: score[1],
     value: Number(score[2]),
     pv: pv ? pv[1].split(" ") : [],
@@ -46,6 +48,7 @@ export class Engine {
     });
     this.failure.catch(() => {});
     this.queue = Promise.resolve();
+    this.multiPv = 1;
   }
 
   send(command) {
@@ -88,17 +91,39 @@ export class Engine {
   }
 
   /**
-   * Evaluates a position. Requests are serialized because the engine handles one search at a time.
-   * Returns { cp, mate, bestMove, pv } with the score from White's point of view.
+   * Clears the transposition table. Fixed-depth single-threaded searches are then deterministic,
+   * so a position gets the same evaluation whichever engine of a pool analyzes it.
    */
-  evaluate(fen, { depth }) {
+  reset() {
     const run = async () => {
-      let last = null;
+      const ok = this.waitFor((line) => line === "readyok");
+      this.send("ucinewgame");
+      this.send("isready");
+      await ok;
+    };
+    const result = this.queue.then(run);
+    this.queue = result.catch(() => {});
+    return result;
+  }
+
+  /**
+   * Evaluates a position. Requests are serialized because the engine handles one search at a time.
+   * Returns { cp, mate, bestMove, pv, lines } with scores from White's point of view;
+   * `lines` holds one entry per principal variation (`multiPv` of them at most).
+   */
+  evaluate(fen, { depth, multiPv = 1 }) {
+    const run = async () => {
+      if (multiPv !== this.multiPv) {
+        this.send(`setoption name MultiPV value ${multiPv}`);
+        this.multiPv = multiPv;
+      }
+      const latest = new Map();
       const done = this.waitFor(
         (line) => line.startsWith("bestmove"),
         (line) => {
           if (line.startsWith("info") && !line.includes(" upperbound") && !line.includes(" lowerbound")) {
-            last = parseInfo(line) ?? last;
+            const info = parseInfo(line);
+            if (info) latest.set(info.rank, info);
           }
         },
       );
@@ -108,8 +133,12 @@ export class Engine {
 
       const sideToMove = fen.split(" ")[1];
       const bestMove = bestLine.split(" ")[1];
-      const score = toWhitePerspective(last ?? { type: "cp", value: 0 }, sideToMove);
-      return { ...score, bestMove: bestMove === "(none)" ? null : bestMove, pv: last?.pv ?? [] };
+      const lines = [...latest.keys()].sort((a, b) => a - b).map((rank) => {
+        const info = latest.get(rank);
+        return { ...toWhitePerspective(info, sideToMove), pv: info.pv };
+      });
+      const best = lines[0] ?? { ...toWhitePerspective({ type: "cp", value: 0 }, sideToMove), pv: [] };
+      return { ...best, bestMove: bestMove === "(none)" ? null : bestMove, lines };
     };
     const result = this.queue.then(run);
     this.queue = result.catch(() => {});

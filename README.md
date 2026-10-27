@@ -12,7 +12,7 @@ Everything is **free and local**: games are fetched from the chess.com public AP
 |---|---|---|
 | 1 | Extension skeleton, configurable username, recent games list, English/Spanish UI | ✅ |
 | 2 | Stockfish (WebAssembly) engine integration and per-move evaluation | ✅ |
-| 3 | Move classification, accuracy and game summary | ⏳ |
+| 3 | Move classification, accuracy and game summary | ✅ |
 | 4 | Move-by-move review with board and evaluation graph | ⏳ |
 | 5 | Mistake explanations (hanging pieces, mates, tactics, positional errors) | ⏳ |
 
@@ -36,13 +36,19 @@ CheckView/
 ├── manifest.json            # Extension configuration (Manifest V3)
 ├── src/
 │   ├── lib/
-│   │   ├── analysis.js      # Per-move game evaluation
-│   │   ├── chesscom-api.js  # chess.com public API client
-│   │   ├── engine.js        # Stockfish Web Worker wrapper (UCI)
-│   │   └── i18n.js          # English/Spanish translations
-│   ├── popup/               # Toolbar popup: recent games
-│   └── review/              # Game review page
-├── vendor/                  # Third-party code (Stockfish, chess.js)
+│   │   ├── analysis.js        # Per-move game evaluation
+│   │   ├── chesscom-api.js    # chess.com public API client
+│   │   ├── classification.js  # Move classification and accuracy
+│   │   ├── engine.js          # Stockfish Web Worker wrapper (UCI)
+│   │   ├── i18n.js            # English/Spanish translations
+│   │   └── openings.js        # Opening book lookups
+│   ├── popup/                 # Toolbar popup: recent games
+│   └── review/                # Game review page
+├── data/
+│   └── openings.json          # Opening book (generated)
+├── scripts/
+│   └── build-openings.mjs     # Builds data/openings.json
+├── vendor/                    # Third-party code (Stockfish, chess.js)
 └── docs/
     └── ARCHITECTURE.md      # Technical design
 ```
@@ -60,3 +66,5 @@ See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for details.
 ## License
 
 [GPL-3.0](LICENSE). Stockfish is distributed under GPLv3, so this project uses the same license.
+
+Opening data comes from [lichess-org/chess-openings](https://github.com/lichess-org/chess-openings) (CC0).

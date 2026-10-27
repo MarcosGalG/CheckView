@@ -20,6 +20,24 @@
 
     <p id="status" class="status" hidden></p>
 
+    <table id="summary" class="summary" hidden>
+      <thead>
+        <tr>
+          <th></th>
+          <th id="white-name" class="player"></th>
+          <th id="black-name" class="player"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="accuracy-row">
+          <th data-i18n="review.accuracy"></th>
+          <td id="white-accuracy"></td>
+          <td id="black-accuracy"></td>
+        </tr>
+      </tbody>
+      <tbody id="summary-counts"></tbody>
+    </table>
+
     <table id="moves" class="moves" hidden>
       <tbody id="moves-body"></tbody>
     </table>
