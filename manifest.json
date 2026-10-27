@@ -3,9 +3,19 @@
   "name": "CheckView",
   "version": "0.1.0",
   "description": "Analyze your finished chess.com games with Stockfish, free and fully local.",
+  "icons": {
+    "16": "src/assets/icon-16.png",
+    "32": "src/assets/icon-32.png",
+    "48": "src/assets/icon-48.png",
+    "128": "src/assets/icon-128.png"
+  },
   "action": {
     "default_popup": "src/popup/popup.html",
-    "default_title": "CheckView"
+    "default_title": "CheckView",
+    "default_icon": {
+      "16": "src/assets/icon-16.png",
+      "32": "src/assets/icon-32.png"
+    }
   },
   "permissions": ["storage"],
   "host_permissions": ["https://api.chess.com/*"],

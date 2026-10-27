@@ -4,7 +4,7 @@
   --surface-alt: #262930;
   --text: #e8e9eb;
   --text-muted: #9a9ea6;
-  --accent: #5b9bd5;
+  --accent: #10ae7c;
   --error: #e05d5d;
 }
 
@@ -26,6 +26,8 @@ body {
 }
 
 .header { margin-bottom: 16px; }
+.brand { display: flex; align-items: center; gap: 12px; }
+.brand img { width: 44px; height: 44px; flex: none; }
 .header h1 { margin: 0 0 4px; font-size: 22px; }
 .players { margin: 0; color: var(--text-muted); }
 

@@ -9,8 +9,13 @@
 <body>
   <main class="page">
     <header class="header">
-      <h1 data-i18n="review.title"></h1>
-      <p id="players" class="players"></p>
+      <div class="brand">
+        <img src="../assets/logo-small.svg" alt="">
+        <div>
+          <h1 data-i18n="review.title"></h1>
+          <p id="players" class="players"></p>
+        </div>
+      </div>
     </header>
 
     <section id="progress" class="progress" hidden>
@@ -46,6 +51,7 @@
   <template id="move-cell">
     <div class="move">
       <div class="move-main">
+        <span class="move-icon"></span>
         <span class="move-san"></span>
         <span class="move-eval"></span>
       </div>

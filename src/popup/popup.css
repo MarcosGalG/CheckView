@@ -4,7 +4,8 @@
   --surface-hover: #33373e;
   --text: #e8e9eb;
   --text-muted: #9a9ea6;
-  --accent: #5b9bd5;
+  --accent: #10ae7c;
+  --accent-strong: #0b8a62;
   --win: #6cbf5a;
   --loss: #e05d5d;
   --draw: #9a9ea6;
@@ -27,7 +28,9 @@ body {
   align-items: flex-start;
   margin-bottom: 12px;
 }
-.header h1 { margin: 0; font-size: 20px; }
+.brand { display: flex; align-items: center; gap: 10px; }
+.brand img { width: 36px; height: 36px; }
+.header h1 { margin: 0; font-size: 20px; line-height: 1.2; }
 .subtitle { color: var(--text-muted); font-size: 12px; }
 
 .language {
@@ -54,7 +57,7 @@ button {
   padding: 8px 12px;
   border: 0;
   border-radius: 6px;
-  background: var(--accent);
+  background: var(--accent-strong);
   color: #fff;
   font-weight: 600;
   cursor: pointer;
