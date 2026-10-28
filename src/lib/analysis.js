@@ -87,6 +87,10 @@ export async function analyzeGame(pgn, engines, { openings, depth = DEFAULT_DEPT
       evalAfter: after && { cp: after.cp, mate: after.mate },
       bestMove: before?.bestMove ?? null,
       bestMoveSan: uciToSan(move.before, before?.bestMove),
+      // Engine lines (UCI): best play from the position before the move, and the
+      // opponent's best reply line after it. Used to explain the move.
+      bestLine: before?.pv ?? [],
+      replyLine: after?.pv ?? [],
       secondBestEval: second ? { cp: second.cp, mate: second.mate } : null,
       isBest: uci === before?.bestMove,
     };

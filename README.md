@@ -14,7 +14,7 @@ Everything is **free and local**: games are fetched from the chess.com public AP
 | 2 | Stockfish (WebAssembly) engine integration and per-move evaluation | ✅ |
 | 3 | Move classification, accuracy and game summary | ✅ |
 | 4 | Move-by-move review with board, evaluation bar and graph, and variation exploration | ✅ |
-| 5 | Mistake explanations (hanging pieces, mates, tactics, positional errors) | ⏳ |
+| 5 | Move explanations (mates, lost and missed material, forks, pawn structure, king safety, opening names) | ✅ |
 
 ## Installation (developer mode)
 
@@ -40,6 +40,7 @@ CheckView/
 │   │   ├── chesscom-api.js    # chess.com public API client
 │   │   ├── classification.js  # Move classification and accuracy
 │   │   ├── engine.js          # Stockfish Web Worker wrapper (UCI)
+│   │   ├── explanations.js    # Rule-based move explanations
 │   │   ├── i18n.js            # English/Spanish translations
 │   │   └── openings.js        # Opening book lookups
 │   ├── popup/                 # Toolbar popup: recent games

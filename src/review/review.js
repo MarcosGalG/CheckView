@@ -3,8 +3,9 @@ import { Chess } from "../../vendor/chess.js/chess.js";
 import { analyzeGame } from "../lib/analysis.js";
 import { CLASSIFICATIONS, classifyMoves, summarize } from "../lib/classification.js";
 import { Engine } from "../lib/engine.js";
+import { explainMove } from "../lib/explanations.js";
 import { applyTranslations, resolveLanguage, setLanguage, t } from "../lib/i18n.js";
-import { loadOpenings } from "../lib/openings.js";
+import { loadOpenings, positionKey } from "../lib/openings.js";
 import { EvalBar, formatEval } from "./eval-bar.js";
 import { EvalGraph } from "./eval-graph.js";
 
@@ -32,6 +33,8 @@ let analyzed = null;
 /** Current position: a ply of the main line, or a variation branching off it. */
 let cursor = { ply: 0, variation: null };
 let iconMarkup = {};
+/** Opening book (position key → name), loaded with the analysis. */
+let openings = null;
 let board;
 let evalBar;
 let graph;
@@ -148,15 +151,53 @@ function render() {
   graph.setCursor(cursor.variation ? cursor.variation.base : cursor.ply);
 }
 
+/** A move line as nodes: "12... ♞xe4 13. ♛d3". */
+function lineNodes(line) {
+  return line.flatMap((step, i) => {
+    const number = step.color === "w" ? `${step.number}. ` : i === 0 ? `${step.number}... ` : "";
+    return [i > 0 ? " " : "", number, ...sanNodes(step.san)];
+  });
+}
+
+/** Translated sentence with its placeholders rendered: moves and lines as figurine notation. */
+function sentenceNodes(key, params = {}) {
+  return t(key).split(/(\{\w+\})/).flatMap((part) => {
+    const name = part.match(/^\{(\w+)\}$/)?.[1];
+    if (!name || !(name in params)) return [part];
+    const value = params[name];
+    if (name === "move") return sanNodes(value.san);
+    if (name === "line") return lineNodes(value);
+    if (name === "piece") return [t(`pieceA.${value}`)];
+    return [String(value)];
+  });
+}
+
+/** Name of the opening reached at `ply`: the deepest named book position up to it. */
+function openingName(ply) {
+  for (let i = ply; i >= 1; i--) {
+    const name = openings?.[positionKey(mainLine[i - 1].after)];
+    if (name) return name;
+  }
+  return null;
+}
+
+function moveExplanation(move) {
+  if (move.classification !== "book") return move.explanation;
+  const opening = openingName(move.ply);
+  return [opening ? { key: "explain.book", params: { opening } } : { key: "explain.bookUnnamed" }];
+}
+
 function renderCurrent(position, evaluation) {
   const panel = $("current");
   const icon = $("current-icon");
+  const text = $("current-text");
+  const explanation = $("current-explanation");
+  const best = $("current-best");
   icon.replaceChildren();
-  $("current-best").textContent = "";
+  explanation.replaceChildren();
+  best.replaceChildren();
   $("back-to-game").hidden = !cursor.variation;
 
-  const text = $("current-text");
-  const best = $("current-best");
   if (cursor.variation) {
     const played = cursor.variation.moves.slice(0, cursor.variation.index);
     text.replaceChildren(`${t("review.variation")}:`, ...played.flatMap((m) => [" ", ...sanNodes(m.san)]));
@@ -164,9 +205,12 @@ function renderCurrent(position, evaluation) {
     const { classification, san, bestMoveSan } = position.move;
     icon.append(classificationIcon(classification));
     text.replaceChildren(...sanNodes(san), ` · ${t(`class.${classification}`)}`);
+    for (const sentence of moveExplanation(position.move)) {
+      if (explanation.childNodes.length > 0) explanation.append(" ");
+      explanation.append(...sentenceNodes(sentence.key, sentence.params));
+    }
     if (SHOW_BEST_FOR.has(classification) && bestMoveSan) {
-      const [before, after] = t("review.best", { move: "{move}" }).split("{move}");
-      best.replaceChildren(before, ...sanNodes(bestMoveSan), after);
+      best.replaceChildren(...sentenceNodes("review.best", { move: { san: bestMoveSan } }));
     }
   } else if (cursor.ply > 0) {
     text.replaceChildren(...sanNodes(mainLine[cursor.ply - 1].san));
@@ -379,12 +423,12 @@ async function analyze(game, white, black) {
   progress.hidden = false;
   updateProgress(0, 1);
   try {
-    const [openings] = await Promise.all([
+    [openings] = await Promise.all([
       loadOpenings(chrome.runtime.getURL("data/openings.json")),
       ...engines.map((engine) => engine.init()),
     ]);
     const analysis = await analyzeGame(game.pgn, engines, { openings, onProgress: updateProgress });
-    analyzed = classifyMoves(analysis.moves);
+    analyzed = classifyMoves(analysis.moves).map((move) => ({ ...move, explanation: explainMove(move) }));
     progress.hidden = true;
     renderSummary(summarize(analyzed), white, black);
     graph.setMoves(analyzed);

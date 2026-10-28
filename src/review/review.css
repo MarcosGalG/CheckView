@@ -208,6 +208,8 @@ button { font: inherit; color: inherit; }
 .current-main .class-icon { width: 24px; height: 24px; }
 .current-text { font-weight: 600; }
 .current-eval { margin-left: auto; color: var(--text-muted); font-variant-numeric: tabular-nums; }
+.current-explanation { margin: 6px 0 0; text-wrap: pretty; }
+.current-explanation:empty { display: none; }
 .current-best { margin: 4px 0 0; color: var(--text-muted); }
 .current-best:empty { display: none; }
 .link-button {
