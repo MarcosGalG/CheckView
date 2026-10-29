@@ -16,9 +16,13 @@ export class ChessComApiError extends Error {
   }
 }
 
-async function getJson(url) {
+/**
+ * Fetches JSON from the API. A 404 only means "user not found" on the player's own endpoint:
+ * the API also answers 404 on internal errors, e.g. while serving a monthly archive.
+ */
+async function getJson(url, { notFoundMeansNoUser = false } = {}) {
   const response = await fetch(url);
-  if (response.status === 404) {
+  if (response.status === 404 && notFoundMeansNoUser) {
     throw new ChessComApiError("userNotFound", response.status);
   }
   if (!response.ok) {
@@ -33,7 +37,7 @@ async function getJson(url) {
  */
 export async function getRecentGames(username, limit = 10) {
   const user = username.trim().toLowerCase();
-  const { archives } = await getJson(`${API_BASE}/${user}/games/archives`);
+  const { archives } = await getJson(`${API_BASE}/${user}/games/archives`, { notFoundMeansNoUser: true });
 
   const games = [];
   for (let i = archives.length - 1; i >= 0 && games.length < limit; i--) {
