@@ -139,7 +139,7 @@ The panel keeps the current move and the evaluation graph pinned above the navig
 
 ### Cursor and variations
 
-The cursor is either a ply of the main line or a variation branching off it (`{ base, moves, index }`). Moving a piece on the board follows the game if it matches the next move, otherwise starts a variation, or extends the current one from the displayed move. Arrow keys, Home/End and the navigation buttons move the cursor; stepping back past the first variation move returns to the main line.
+The cursor is either a ply of the main line or a variation branching off it (`{ base, moves, index }`). Moving a piece on the board follows the game if it matches the next move, otherwise starts a variation, or extends the current one from the displayed move. The best-move button under a non-best move plays the engine's choice instead, as a variation from the position before it. Arrow keys, Home/End and the navigation buttons move the cursor; stepping back past the first variation move returns to the main line.
 
 ### Evaluations
 

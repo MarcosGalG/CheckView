@@ -196,6 +196,7 @@ function renderCurrent(position, evaluation) {
   icon.replaceChildren();
   explanation.replaceChildren();
   best.replaceChildren();
+  best.hidden = true;
   $("back-to-game").hidden = !cursor.variation;
 
   if (cursor.variation) {
@@ -210,7 +211,8 @@ function renderCurrent(position, evaluation) {
       explanation.append(...sentenceNodes(sentence.key, sentence.params));
     }
     if (SHOW_BEST_FOR.has(classification) && bestMoveSan) {
-      best.replaceChildren(...sentenceNodes("review.best", { move: { san: bestMoveSan } }));
+      best.replaceChildren(classificationIcon("best"), ...sentenceNodes("review.best", { move: { san: bestMoveSan } }));
+      best.hidden = false;
     }
   } else if (cursor.ply > 0) {
     text.replaceChildren(...sanNodes(mainLine[cursor.ply - 1].san));
@@ -346,12 +348,25 @@ function onBoardMove(from, to) {
   render();
 }
 
+/** Plays the engine's choice instead of the current move, as a variation from the position before it. */
+function playBestMove() {
+  const move = analyzed?.[cursor.ply - 1];
+  if (cursor.variation || !move?.bestMove) return;
+  const chess = new Chess(move.fenBefore);
+  const best = move.bestMove;
+  const played = chess.move({ from: best.slice(0, 2), to: best.slice(2, 4), promotion: best[4] });
+  const variationMove = { san: played.san, from: played.from, to: played.to, after: played.after };
+  cursor = { ply: cursor.ply - 1, variation: { base: cursor.ply - 1, moves: [variationMove], index: 1 } };
+  render();
+}
+
 function bindNavigation() {
   $("nav-first").addEventListener("click", () => goTo(0));
   $("nav-prev").addEventListener("click", () => step(-1));
   $("nav-next").addEventListener("click", () => step(1));
   $("nav-last").addEventListener("click", () => goTo(mainLine.length));
   $("back-to-game").addEventListener("click", () => goTo(cursor.variation.base));
+  $("current-best").addEventListener("click", playBestMove);
   document.addEventListener("keydown", (event) => {
     const actions = { ArrowLeft: () => step(-1), ArrowRight: () => step(1), Home: () => goTo(0), End: () => goTo(mainLine.length) };
     const action = actions[event.key];
